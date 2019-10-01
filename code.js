@@ -11,7 +11,9 @@ function preload () {
 }
 
 var land;
-
+var timeText;
+var timeLimit = 60; // timeLimit for countdown in seconds
+var timeOver = false; // set to false at start
 var shadow;
 var tank;
 var tank2;
@@ -21,7 +23,20 @@ var enterKey;
 var currentSpeed = 0;
 var currentSpeed2 = 0;
 var bullets;
+var score1 = 0;
+var score2 = 0;
+
 function create () {
+
+    timeText = game.add.text(680, 20, '', { fontSize: '20px', fill: '#ffffff' });
+    timeText.fixedToCamera = true;
+    
+    winGameText = game.add.text(300, 300, '', { fontSize: '60px', fill: '#ffffff' });
+    
+    scoreOneText = game.add.text(500, 20, '', { fontSize: '20px', fill: '#ffffff' });
+
+    scoreTwoText = game.add.text(300, 20, '', { fontSize: '20px', fill: '#ffffff' });
+
     spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     enterKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
 
@@ -63,7 +78,7 @@ function create () {
     weapon2.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
 
     //  The speed at which the bullet is fired
-    weapon2.bulletSpeed = 100;
+    weapon2.bulletSpeed = 500;
 
     weapon2.fireRate = 2000;
 
@@ -74,7 +89,7 @@ function create () {
     weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
 
     //  The speed at which the bullet is fired
-    weapon.bulletSpeed = 100;
+    weapon.bulletSpeed = 500;
 
     weapon.fireRate = 2000;
 
@@ -97,6 +112,22 @@ function create () {
 
 
 function update () {
+    if (timeOver == false) displayTimeRemaining();
+    else {
+        tank.kill()
+        turret.kill()
+        tank2.kill()
+        turret2.kill()
+        if (score1 > score2){
+        winGameText.text = "Player 1 Wins"
+        } else if (score2 > score1){
+            winGameText.text = "Player 2 Wins"
+        }
+    }   
+    scoreOneText.text = "Player 1: " + score1;
+    scoreTwoText.text = "Player 2: " + score2;
+
+
     game.physics.arcade.overlap(tank, weapon2.bullets, enemyHit, null, this);
     game.physics.arcade.overlap(tank2, weapon.bullets, enemyHit2, null, this);
 
@@ -181,10 +212,39 @@ function enemyHit(tank, weapon2) {
     turret.kill();
     weapon2.kill();
     console.log("Enemy hit");
+    tank.reset(game.world.randomX,game.world.randomY)
+    turret.reset(game.world.randomX,game.world.randomY)
+    score2++
 }
+
 function enemyHit2(tank2, weapon) {
     weapon.kill();
     tank2.kill();
     turret2.kill();
     console.log("Enemy hit");
+    tank2.reset(game.world.randomX,game.world.randomY)
+    turret2.reset(game.world.randomX,game.world.randomY)
+    score1++
+}
+
+function displayTimeRemaining() {
+    var time = Math.floor(game.time.totalElapsedSeconds() );
+    var timeLeft = timeLimit - time;
+
+    // detect when countdown is over
+    if (timeLeft <= 0) {
+        timeLeft = 0;
+        timeOver = true;
+    }
+
+    var min = Math.floor(timeLeft / 60);
+    var sec = timeLeft % 60;
+
+    if (min < 10) {
+        min = '0' + min;
+    }
+    if (sec < 10) {
+        sec = '0' + sec;
+    }
+    timeText.text = 'Time Left ' + min + ':' + sec;
 }
