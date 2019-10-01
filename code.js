@@ -92,13 +92,14 @@ function create () {
     downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
     upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
 
-    game.physics.arcade.overlap(tank, weapon, enemyHit, null, this);
-    game.physics.arcade.overlap(tank2, weapon2, enemyHit2, null, this);
 
 }
 
 
 function update () {
+    game.physics.arcade.overlap(tank, weapon2.bullets, enemyHit, null, this);
+    game.physics.arcade.overlap(tank2, weapon.bullets, enemyHit2, null, this);
+
     if (cursors.left.isDown)
     {
         tank.angle -= .75;
@@ -129,7 +130,7 @@ function update () {
     }
     if (upKey.isDown)
     {
-        
+
         currentSpeed2 = 50;
     }
     if (currentSpeed2 > 0)
@@ -177,11 +178,13 @@ function update () {
 
 function enemyHit(tank, weapon2) {
     tank.kill();
+    turret.kill();
     weapon2.kill();
     console.log("Enemy hit");
 }
 function enemyHit2(tank2, weapon) {
     weapon.kill();
     tank2.kill();
+    turret2.kill();
     console.log("Enemy hit");
 }
