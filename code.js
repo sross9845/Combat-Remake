@@ -5,7 +5,7 @@ var game = new Phaser.Game(1000, 600, Phaser.AUTO, 'my-game', { preload: preload
 function preload () {
     game.load.crossOrigin = 'anonymous';
     game.load.atlas('tank', 'http://examples.phaser.io/assets/games/tanks/tanks.png', 'http://examples.phaser.io/assets/games/tanks/tanks.json');
-    game.load.atlas('tank2', 'http://examples.phaser.io/assets/games/tanks/tanks.png', 'http://examples.phaser.io/assets/games/tanks/tanks.json');
+    game.load.atlas('tank2', 'http://examples.phaser.io/assets/games/tanks/enemy-tanks.png', 'http://examples.phaser.io/assets/games/tanks/tanks.json');
     game.load.image('bullet', 'http://examples.phaser.io/assets/games/tanks/bullet.png');
     
 }
@@ -46,12 +46,12 @@ function create () {
     //  The base of our tank
     tank2 = game.add.sprite(300, 100, 'tank2', 'tank1');
     tank2.anchor.setTo(0.5, 0.5);
-    tank2.animations.add('move', ['tank1', 'tank2', 'tank3', 
-     'tank4', 'tank5', 'tank6'], 20, true);
+    // tank2.animations.add('move', ['tank1', 'tank2', 'tank3', 
+    //  'tank4', 'tank5', 'tank6'], 20, true);
 
     tank = game.add.sprite(100, 300, 'tank', 'tank1');
     tank.anchor.setTo(0.5, 0.5);
-    tank.animations.add('move', ['tank1', 'tank2', 'tank3', 'tank4', 'tank5', 'tank6'], 20, true);
+    // tank.animations.add('move', ['tank1', 'tank2', 'tank3', 'tank4', 'tank5', 'tank6'], 20, true);
 
     //  This will force it to decelerate and limit its speed
     game.physics.enable(tank, Phaser.Physics.ARCADE);
@@ -119,13 +119,13 @@ function update () {
         tank2.kill()
         turret2.kill()
         if (score1 > score2){
-        winGameText.text = "Player 1 Wins"
+        winGameText.text = "Green Tank Wins"
         } else if (score2 > score1){
-            winGameText.text = "Player 2 Wins"
+            winGameText.text = "Red Tank Wins"
         }
     }   
-    scoreOneText.text = "Player 1: " + score1;
-    scoreTwoText.text = "Player 2: " + score2;
+    scoreOneText.text = "Green Tank: " + score1;
+    scoreTwoText.text = "Red Tank: " + score2;
 
 
     game.physics.arcade.overlap(tank, weapon2.bullets, enemyHit, null, this);
