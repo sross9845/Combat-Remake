@@ -6,8 +6,7 @@ function preload () {
     game.load.crossOrigin = 'anonymous';
     game.load.atlas('tank', 'http://examples.phaser.io/assets/games/tanks/tanks.png', 'http://examples.phaser.io/assets/games/tanks/tanks.json');
     game.load.atlas('tank2', 'http://examples.phaser.io/assets/games/tanks/enemy-tanks.png', 'http://examples.phaser.io/assets/games/tanks/tanks.json');
-    game.load.image('bullet', 'http://examples.phaser.io/assets/games/tanks/bullet.png');
-    
+    game.load.image('bullet', 'http://examples.phaser.io/assets/games/asteroids/bullets.png');
 }
 
 var land;
@@ -27,15 +26,16 @@ var score1 = 0;
 var score2 = 0;
 
 function create () {
+    game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    timeText = game.add.text(680, 20, '', { fontSize: '20px', fill: '#ffffff' });
+    timeText = game.add.text(666, 20, '', { fontSize: '20px', fill: '#ffffff' });
     timeText.fixedToCamera = true;
     
-    winGameText = game.add.text(300, 300, '', { fontSize: '60px', fill: '#ffffff' });
+    winGameText = game.add.text((game.world.centerX-200), 270, '', { fontSize: '60px', fill: '#ffffff' });
     
-    scoreOneText = game.add.text(500, 20, '', { fontSize: '20px', fill: '#ffffff' });
+    scoreOneText = game.add.text(222, 20, '', { fontSize: '20px', fill: '#ffffff' });
 
-    scoreTwoText = game.add.text(300, 20, '', { fontSize: '20px', fill: '#ffffff' });
+    scoreTwoText = game.add.text(444, 20, '', { fontSize: '20px', fill: '#ffffff' });
 
     spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     enterKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
@@ -44,13 +44,14 @@ function create () {
     game.world.setBounds(0,0, 1000, 600);
 
     //  The base of our tank
-    tank2 = game.add.sprite(300, 100, 'tank2', 'tank1');
+    tank2 = game.add.sprite(100, 300, 'tank2', 'tank1');
     tank2.anchor.setTo(0.5, 0.5);
     // tank2.animations.add('move', ['tank1', 'tank2', 'tank3', 
     //  'tank4', 'tank5', 'tank6'], 20, true);
 
-    tank = game.add.sprite(100, 300, 'tank', 'tank1');
+    tank = game.add.sprite(900, 300, 'tank', 'tank1');
     tank.anchor.setTo(0.5, 0.5);
+    tank.angle = 180;
     // tank.animations.add('move', ['tank1', 'tank2', 'tank3', 'tank4', 'tank5', 'tank6'], 20, true);
 
     //  This will force it to decelerate and limit its speed
@@ -69,10 +70,10 @@ function create () {
     //  Finally on-top of the tank body
     turret = game.add.sprite(0, 0, 'tank', 'turret');
     turret.anchor.setTo(0.3, 0.5);
-
+    turret.angle = 180;
     turret2 = game.add.sprite(0, 0, 'tank2', 'turret');
     turret2.anchor.setTo(0.3, 0.5);
-    
+
     weapon2 = game.add.weapon(1, 'bullet');
 
     weapon2.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
@@ -82,15 +83,15 @@ function create () {
 
     weapon2.fireRate = 2000;
 
+    // weapon2._bulletCollideWorldBounds = true;
+
     weapon2.trackSprite(turret2, 0, 0, true);
-    
+
     weapon = game.add.weapon(1, 'bullet');
-
-    weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
-
+    weapon2.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
     //  The speed at which the bullet is fired
     weapon.bulletSpeed = 500;
-
+    // weapon._bulletCollideWorldBounds = true;
     weapon.fireRate = 2000;
 
     weapon.trackSprite(turret, 0, 0, true);
@@ -122,10 +123,12 @@ function update () {
         winGameText.text = "Green Tank Wins"
         } else if (score2 > score1){
             winGameText.text = "Red Tank Wins"
+        } else {
+            winGameText.text = "Tie Game!"
         }
     }   
-    scoreOneText.text = "Green Tank: " + score1;
-    scoreTwoText.text = "Red Tank: " + score2;
+    scoreOneText.text = "Red Tank: " + score1;
+    scoreTwoText.text = "Green Tank: " + score2;
 
 
     game.physics.arcade.overlap(tank, weapon2.bullets, enemyHit, null, this);
