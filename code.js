@@ -6,7 +6,7 @@ function preload () {
     game.load.crossOrigin = 'anonymous';
     game.load.image('tank', 'https://i.imgur.com/Pjatpuk.png');
     game.load.image('tank2', 'https://i.imgur.com/NbcoPec.png');
-    game.load.image('bullet', 'http://examples.phaser.io/assets/games/asteroids/bullets.png');
+    game.load.image('bullet', 'https://i.imgur.com/ERkIBeJ.png');
     game.load.tilemap('map', 'assets/tilemap.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles', 'assets/tilesets.png');  
 }
@@ -27,6 +27,8 @@ var score1 = 0;
 var score2 = 0;
 var map;
 var layer;
+var timeLeft;
+var time;
 
 function create () {
     game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -80,7 +82,7 @@ function create () {
 
 
     weapon2 = game.add.weapon(1, 'bullet');
-
+    
     weapon2.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
 
     //  The speed at which the bullet is fired
@@ -253,12 +255,12 @@ function reset(){
     tank.reset(900,300)
     tank.angle = 180;
     tank2.reset(100,300)
-    score1 = 0;
-    score2 = 0;
-    timeOver = false;
     timeLimit = 60;
     time = 0;
     timeLeft = 60;
+    timeOver = false;
     winGameText.text = "";
+    score1 = 0;
+    score2 = 0;
     console.log("whats up is this thang working")
 }
