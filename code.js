@@ -4,9 +4,11 @@ var game = new Phaser.Game(1000, 600, Phaser.AUTO, 'my-game', { preload: preload
 
 function preload () {
     game.load.crossOrigin = 'anonymous';
-    game.load.atlas('tank', 'http://examples.phaser.io/assets/games/tanks/tanks.png', 'http://examples.phaser.io/assets/games/tanks/tanks.json');
-    game.load.atlas('tank2', 'http://examples.phaser.io/assets/games/tanks/enemy-tanks.png', 'http://examples.phaser.io/assets/games/tanks/tanks.json');
+    game.load.image('tank', 'https://i.imgur.com/Pjatpuk.png');
+    game.load.image('tank2', 'https://i.imgur.com/NbcoPec.png');
     game.load.image('bullet', 'http://examples.phaser.io/assets/games/asteroids/bullets.png');
+    game.load.tilemap('map', 'assets/tilemap.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.image('tiles', 'assets/tilesets.png');  
 }
 
 var land;
@@ -16,7 +18,6 @@ var timeOver = false; // set to false at start
 var shadow;
 var tank;
 var tank2;
-var turret;
 var spaceKey;
 var enterKey;
 var currentSpeed = 0;
@@ -24,9 +25,19 @@ var currentSpeed2 = 0;
 var bullets;
 var score1 = 0;
 var score2 = 0;
+var map;
+var layer;
 
 function create () {
     game.physics.startSystem(Phaser.Physics.ARCADE);
+
+    map = game.add.tilemap('map');  // 
+    map.addTilesetImage('tilesets', 'tiles');  // set tileset name
+    layer = map.createLayer('ground');  // set layer name
+    layer.resizeWorld();
+
+    map.setCollision(4, true, layer);
+    
 
     timeText = game.add.text(666, 20, '', { fontSize: '20px', fill: '#ffffff' });
     timeText.fixedToCamera = true;
@@ -44,12 +55,14 @@ function create () {
     game.world.setBounds(0,0, 1000, 600);
 
     //  The base of our tank
-    tank2 = game.add.sprite(100, 300, 'tank2', 'tank1');
+    tank2 = game.add.sprite(100, 300, 'tank2');
+    tank2.scale.setTo(0.25,0.25);
     tank2.anchor.setTo(0.5, 0.5);
     // tank2.animations.add('move', ['tank1', 'tank2', 'tank3', 
     //  'tank4', 'tank5', 'tank6'], 20, true);
 
-    tank = game.add.sprite(900, 300, 'tank', 'tank1');
+    tank = game.add.sprite(900, 300, 'tank');
+    tank.scale.setTo(0.25,0.25);
     tank.anchor.setTo(0.5, 0.5);
     tank.angle = 180;
     // tank.animations.add('move', ['tank1', 'tank2', 'tank3', 'tank4', 'tank5', 'tank6'], 20, true);
@@ -57,49 +70,37 @@ function create () {
     //  This will force it to decelerate and limit its speed
     game.physics.enable(tank, Phaser.Physics.ARCADE);
     tank.body.drag.set(0.2);
-    tank.body.maxVelocity.setTo(50, 50);
     tank.body.collideWorldBounds = true;
-    tank.health = 1;
+    
 
     game.physics.enable(tank2, Phaser.Physics.ARCADE);
     tank2.body.drag.set(0.2);
-    tank2.body.maxVelocity.setTo(50, 50);
     tank2.body.collideWorldBounds = true;
-    tank2.health = 1;
+    
 
-    //  Finally on-top of the tank body
-    turret = game.add.sprite(0, 0, 'tank', 'turret');
-    turret.anchor.setTo(0.3, 0.5);
-    turret.angle = 180;
-    turret2 = game.add.sprite(0, 0, 'tank2', 'turret');
-    turret2.anchor.setTo(0.3, 0.5);
 
     weapon2 = game.add.weapon(1, 'bullet');
 
     weapon2.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
 
     //  The speed at which the bullet is fired
-    weapon2.bulletSpeed = 500;
+    weapon2.bulletSpeed = 200;
 
     weapon2.fireRate = 2000;
 
     // weapon2._bulletCollideWorldBounds = true;
 
-    weapon2.trackSprite(turret2, 0, 0, true);
+    weapon2.trackSprite(tank2, 0, 0, true);
 
     weapon = game.add.weapon(1, 'bullet');
-    weapon2.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+    
+    weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
     //  The speed at which the bullet is fired
-    weapon.bulletSpeed = 500;
+    weapon.bulletSpeed = 200;
     // weapon._bulletCollideWorldBounds = true;
     weapon.fireRate = 2000;
 
-    weapon.trackSprite(turret, 0, 0, true);
-
-    // tank.bringToTop();
-    // tank2.bringToTop();
-    // turret.bringToTop();
-    // turret2.bringToTop();
+    weapon.trackSprite(tank, 0, 0, true);
 
 
     cursors = game.input.keyboard.createCursorKeys();
@@ -113,22 +114,28 @@ function create () {
 
 
 function update () {
+    game.physics.arcade.collide(tank, layer);
+    game.physics.arcade.collide(weapon.bullets, layer, bulletCollide);
+    game.physics.arcade.collide(weapon2.bullets, layer, bulletCollide);
+    game.physics.arcade.collide(tank2, layer);
+
     if (timeOver == false) displayTimeRemaining();
     else {
         tank.kill()
-        turret.kill()
         tank2.kill()
-        turret2.kill()
         if (score1 > score2){
-        winGameText.text = "Green Tank Wins"
+        winGameText.text = "Blue Tank Wins"
+        setTimeout(reset, 5000);
         } else if (score2 > score1){
             winGameText.text = "Red Tank Wins"
+            setTimeout(reset, 5000);
         } else {
             winGameText.text = "Tie Game!"
+            setTimeout(reset, 5000);
         }
     }   
-    scoreOneText.text = "Red Tank: " + score1;
-    scoreTwoText.text = "Green Tank: " + score2;
+    scoreOneText.text = "Blue Tank: " + score1;
+    scoreTwoText.text = "Red Tank: " + score2;
 
 
     game.physics.arcade.overlap(tank, weapon2.bullets, enemyHit, null, this);
@@ -137,35 +144,31 @@ function update () {
     if (cursors.left.isDown)
     {
         tank.angle -= .75;
-        turret.angle -= .75;
     }
     if (leftKey.isDown)
     {
         tank2.angle -= .75;
-        turret2.angle -= .75;
 
     }
 
     if (cursors.right.isDown)
     {
         tank.angle += .75;
-        turret.angle += .75;
     }
     if (rightKey.isDown)
     {
         tank2.angle += .75;
-        turret2.angle += .75;
     }
 
     if (cursors.up.isDown)
     {
         //  The speed we'll travel at
-        currentSpeed = 50;
+        currentSpeed = 60;
     }
     if (upKey.isDown)
     {
 
-        currentSpeed2 = 50;
+        currentSpeed2 = 60;
     }
     if (currentSpeed2 > 0)
     {
@@ -190,11 +193,6 @@ function update () {
     }
 
 
-    //  Position all the parts and align rotations
-    turret.x = tank.x;
-    turret.y = tank.y;
-    turret2.x = tank2.x;
-    turret2.y = tank2.y;
 
 
     if (spaceKey.isDown)
@@ -212,22 +210,18 @@ function update () {
 
 function enemyHit(tank, weapon2) {
     tank.kill();
-    turret.kill();
     weapon2.kill();
     console.log("Enemy hit");
-    tank.reset(game.world.randomX,game.world.randomY)
-    turret.reset(game.world.randomX,game.world.randomY)
-    score2++
+    tank.reset(game.world.randomX,game.world.randomY);
+    score1++
 }
 
 function enemyHit2(tank2, weapon) {
     weapon.kill();
     tank2.kill();
-    turret2.kill();
     console.log("Enemy hit");
-    tank2.reset(game.world.randomX,game.world.randomY)
-    turret2.reset(game.world.randomX,game.world.randomY)
-    score1++
+    tank2.reset(game.world.randomX,game.world.randomY);
+    score2++
 }
 
 function displayTimeRemaining() {
@@ -250,4 +244,21 @@ function displayTimeRemaining() {
         sec = '0' + sec;
     }
     timeText.text = 'Time Left ' + min + ':' + sec;
+}
+
+function bulletCollide (bullet, layer) {
+    bullet.kill();
+}
+function reset(){
+    tank.reset(900,300)
+    tank.angle = 180;
+    tank2.reset(100,300)
+    score1 = 0;
+    score2 = 0;
+    timeOver = false;
+    timeLimit = 60;
+    time = 0;
+    timeLeft = 60;
+    winGameText.text = "";
+    console.log("whats up is this thang working")
 }
