@@ -1,19 +1,14 @@
 
 
 var game = new Phaser.Game(1000, 600, Phaser.AUTO, 'my-game', { preload: preload, create: create, update: update});
+// game.state.add('Game', Game);
 
-function preload () {
-    game.load.crossOrigin = 'anonymous';
-    game.load.image('tank', 'https://i.imgur.com/Pjatpuk.png');
-    game.load.image('tank2', 'https://i.imgur.com/NbcoPec.png');
-    game.load.image('bullet', 'https://i.imgur.com/ERkIBeJ.png');
-    game.load.tilemap('map', 'assets/tilemap.json', null, Phaser.Tilemap.TILED_JSON);
-    game.load.image('tiles', 'assets/tilesets.png');  
-}
+// game.state.start('Game');
+
 
 var land;
 var timeText;
-var timeLimit = 60; // timeLimit for countdown in seconds
+var timeLimit = 120; // timeLimit for countdown in seconds
 var timeOver = false; // set to false at start
 var shadow;
 var tank;
@@ -27,17 +22,26 @@ var score1 = 0;
 var score2 = 0;
 var map;
 var layer;
-var timeLeft;
-var time;
+var time ;
+var timeLeft ;
+
+function preload () {
+    game.load.crossOrigin = 'anonymous';
+    game.load.image('tank', 'https://i.imgur.com/Pjatpuk.png');
+    game.load.image('tank2', 'https://i.imgur.com/NbcoPec.png');
+    game.load.image('bullet', 'https://i.imgur.com/ERkIBeJ.png');
+    game.load.tilemap('map', 'assets/tilemap.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.image('tiles', 'assets/tilesets.png');  
+}
 
 function create () {
     game.physics.startSystem(Phaser.Physics.ARCADE);
-
+    
     map = game.add.tilemap('map');  // 
     map.addTilesetImage('tilesets', 'tiles');  // set tileset name
     layer = map.createLayer('ground');  // set layer name
     layer.resizeWorld();
-
+    
     map.setCollision(4, true, layer);
     
 
@@ -87,20 +91,12 @@ function create () {
 
     //  The speed at which the bullet is fired
     weapon2.bulletSpeed = 200;
-
-    weapon2.fireRate = 2000;
-
-    // weapon2._bulletCollideWorldBounds = true;
-
     weapon2.trackSprite(tank2, 0, 0, true);
 
     weapon = game.add.weapon(1, 'bullet');
-    
     weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
     //  The speed at which the bullet is fired
     weapon.bulletSpeed = 200;
-    // weapon._bulletCollideWorldBounds = true;
-    weapon.fireRate = 2000;
 
     weapon.trackSprite(tank, 0, 0, true);
 
@@ -121,21 +117,18 @@ function update () {
     game.physics.arcade.collide(weapon2.bullets, layer, bulletCollide);
     game.physics.arcade.collide(tank2, layer);
 
-    if (timeOver == false) displayTimeRemaining();
-    else {
-        tank.kill()
-        tank2.kill()
-        if (score1 > score2){
+    if (timeOver == false){ displayTimeRemaining();
+    }else if (score1 > score2){
         winGameText.text = "Blue Tank Wins"
-        setTimeout(reset, 5000);
+        endGame();
         } else if (score2 > score1){
             winGameText.text = "Red Tank Wins"
-            setTimeout(reset, 5000);
+            endGame()
         } else {
             winGameText.text = "Tie Game!"
-            setTimeout(reset, 5000);
+            endGame();
         }
-    }   
+
     scoreOneText.text = "Blue Tank: " + score1;
     scoreTwoText.text = "Red Tank: " + score2;
 
@@ -174,14 +167,14 @@ function update () {
     }
     if (currentSpeed2 > 0)
     {
-        currentSpeed2 -= 2;
+        currentSpeed2 -= .5;
     }
 
     else
     {
         if (currentSpeed > 0)
         {
-            currentSpeed -= 2;
+            currentSpeed -= .5;
         }
     }
 
@@ -207,8 +200,8 @@ function update () {
         //  Boom!
         weapon.fire();
     }
-
 }
+
 
 function enemyHit(tank, weapon2) {
     tank.kill();
@@ -227,8 +220,8 @@ function enemyHit2(tank2, weapon) {
 }
 
 function displayTimeRemaining() {
-    var time = Math.floor(game.time.totalElapsedSeconds() );
-    var timeLeft = timeLimit - time;
+    time = Math.floor(game.time.totalElapsedSeconds() );
+    timeLeft = timeLimit - time;
 
     // detect when countdown is over
     if (timeLeft <= 0) {
@@ -255,12 +248,15 @@ function reset(){
     tank.reset(900,300)
     tank.angle = 180;
     tank2.reset(100,300)
-    timeLimit = 60;
-    time = 0;
-    timeLeft = 60;
+    timeLeft = 120;
+    time = 0
     timeOver = false;
-    winGameText.text = "";
     score1 = 0;
     score2 = 0;
     console.log("whats up is this thang working")
+}
+function endGame(){
+    tank.kill()
+    tank2.kill()
+    setTimeout(reset, 5000);
 }
