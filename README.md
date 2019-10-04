@@ -1,6 +1,6 @@
 # Combat Remake/Remaster
 Game Link: https://sross9845.github.io/Combat-Remake/<br><br>
-Combat Remake/Remaster is a project by Sean Ross. This was made during my time at General Assembly in Seattle. Combat Remake/Remaster is a two player game controlled by WASD/Space for player one and Arrow Keys/Enter/Return for player two. Try to score as many points as you can by killing your opponent before the timer runs out. Make to play like the Atari Combat game.
+Combat Remake/Remaster is a project by Sean Ross. This was made during my time at General Assembly in Seattle. Combat Remake/Remaster is a two player game controlled by WASD/Space for player one and Arrow Keys/Enter/Return for player two. Try to score as many points as you can by killing your opponent before the timer runs out. Made to play like the Atari Combat game.
 ## Technologies Used
 HTML, CSS, Javascript, and my new love hate relationship Phaser.
 
@@ -27,4 +27,8 @@ Working on this ReadMe and styling the page up. Not alot of time before we prese
 -A player still can spawn on un shootable blocks and be invincible, however rarely happens . <br>
 -Learning more about phaser states to create a menu screen and reset function that actually works <br>
 -Getting the Tank-Pong bullets to work
+## Key take-aways
+-Plan out how I am going to tackle new frameworks better in the future. 
+-Spend more time getting my MVP mechanics and the map done instead of working on getting sprites to work first day.
+-Phaser is alot of fun
 
