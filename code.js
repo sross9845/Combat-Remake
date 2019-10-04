@@ -1,11 +1,8 @@
 
 
 var game = new Phaser.Game(1000, 600, Phaser.AUTO, 'my-game', { preload: preload, create: create, update: update});
-// game.state.add('Game', Game);
 
-// game.state.start('Game');
-
-
+//Global Variables
 var land;
 var timeText;
 var timeLimit = 120; // timeLimit for countdown in seconds
@@ -61,17 +58,14 @@ function create () {
     game.world.setBounds(0,0, 1000, 600);
 
     //  The base of our tank
-    tank2 = game.add.sprite(100, 300, 'tank2');
+    tank2 = game.add.sprite(90, 300, 'tank2');
     tank2.scale.setTo(0.25,0.25);
     tank2.anchor.setTo(0.5, 0.5);
-    // tank2.animations.add('move', ['tank1', 'tank2', 'tank3', 
-    //  'tank4', 'tank5', 'tank6'], 20, true);
 
-    tank = game.add.sprite(900, 300, 'tank');
+    tank = game.add.sprite(910, 300, 'tank');
     tank.scale.setTo(0.25,0.25);
     tank.anchor.setTo(0.5, 0.5);
     tank.angle = 180;
-    // tank.animations.add('move', ['tank1', 'tank2', 'tank3', 'tank4', 'tank5', 'tank6'], 20, true);
 
     //  This will force it to decelerate and limit its speed
     game.physics.enable(tank, Phaser.Physics.ARCADE);
@@ -245,18 +239,10 @@ function bulletCollide (bullet, layer) {
     bullet.kill();
 }
 function reset(){
-    tank.reset(900,300)
-    tank.angle = 180;
-    tank2.reset(100,300)
-    timeLeft = 120;
-    time = 0
-    timeOver = false;
-    score1 = 0;
-    score2 = 0;
     console.log("whats up is this thang working")
 }
 function endGame(){
     tank.kill()
     tank2.kill()
-    setTimeout(reset, 5000);
+    // setTimeout(reset, 5000);
 }
