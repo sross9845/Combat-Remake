@@ -21,3 +21,10 @@ I figured out ALOT of my problems today, maybe alittle too many as it created al
 
 ## Day 7
 Working on this ReadMe and styling the page up. Not alot of time before we present. 
+
+## Errors left and future plans
+-The reset function still does not work. <br>
+-A player still can spawn on un shootable blocks and be invincible, however rarely happens . <br>
+-Learning more about phaser states to create a menu screen and reset function that actually works <br>
+-Getting the Tank-Pong bullets to work
+
