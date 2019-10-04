@@ -1,5 +1,5 @@
 
-
+//load game
 var game = new Phaser.Game(1000, 600, Phaser.AUTO, 'my-game', { preload: preload, create: create, update: update});
 
 //Global Variables
@@ -159,7 +159,7 @@ function update () {
 
         currentSpeed2 = 60;
     }
-    //Set some drag so it is alittle harder to stop
+    //Set some "drag" so it is alittle harder to stop
     if (currentSpeed2 > 0)
     {
         currentSpeed2 -= .5;

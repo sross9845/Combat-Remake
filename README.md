@@ -26,7 +26,9 @@ Working on this ReadMe and styling the page up. Not alot of time before we prese
 -The reset function still does not work. <br>
 -A player still can spawn on un shootable blocks and be invincible, however rarely happens . <br>
 -Learning more about phaser states to create a menu screen and reset function that actually works <br>
--Getting the Tank-Pong bullets to work
+-Getting the Tank-Pong bullets to work <br>
+-Attempting to implement something like Socket.io or make it online when I learn more. <br>
+-Make it more faithful to the original
 ## Key Takeaways
 -Plan out how I am going to tackle new frameworks better in the future. <br>
 -Spend more time getting my MVP mechanics and the map done instead of working on getting sprites to work first day.<br>
