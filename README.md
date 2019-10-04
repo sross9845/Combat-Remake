@@ -27,7 +27,7 @@ Working on this ReadMe and styling the page up. Not alot of time before we prese
 -A player still can spawn on un shootable blocks and be invincible, however rarely happens . <br>
 -Learning more about phaser states to create a menu screen and reset function that actually works <br>
 -Getting the Tank-Pong bullets to work
-## Key take-aways
+## Key Takeaways
 -Plan out how I am going to tackle new frameworks better in the future. 
 -Spend more time getting my MVP mechanics and the map done instead of working on getting sprites to work first day.
 -Phaser is alot of fun
