@@ -21,7 +21,7 @@ var map;
 var layer;
 var time ;
 var timeLeft ;
-
+//Loading anything needed for preload of application
 function preload () {
     game.load.crossOrigin = 'anonymous';
     game.load.image('tank', 'https://i.imgur.com/Pjatpuk.png');
@@ -30,18 +30,18 @@ function preload () {
     game.load.tilemap('map', 'assets/tilemap.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles', 'assets/tilesets.png');  
 }
-
+//Creation of sprites and game world
 function create () {
+    //Adding Game Physics
     game.physics.startSystem(Phaser.Physics.ARCADE);
-    
-    map = game.add.tilemap('map');  // 
+    //Generating Map/TileSet
+    map = game.add.tilemap('map'); 
     map.addTilesetImage('tilesets', 'tiles');  // set tileset name
     layer = map.createLayer('ground');  // set layer name
     layer.resizeWorld();
-    
     map.setCollision(4, true, layer);
     
-
+    //Adding in Text to top and Win Game
     timeText = game.add.text(666, 20, '', { fontSize: '20px', fill: '#ffffff' });
     timeText.fixedToCamera = true;
     
@@ -51,66 +51,64 @@ function create () {
 
     scoreTwoText = game.add.text(444, 20, '', { fontSize: '20px', fill: '#ffffff' });
 
-    spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    enterKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
-
     //  Resize our game world 
     game.world.setBounds(0,0, 1000, 600);
 
-    //  The base of our tank
-    tank2 = game.add.sprite(90, 300, 'tank2');
-    tank2.scale.setTo(0.25,0.25);
-    tank2.anchor.setTo(0.5, 0.5);
-
+    // Base of our Red Tank
     tank = game.add.sprite(910, 300, 'tank');
     tank.scale.setTo(0.25,0.25);
     tank.anchor.setTo(0.5, 0.5);
     tank.angle = 180;
 
-    //  This will force it to decelerate and limit its speed
+    //Adding physics and collision to Red Tank
     game.physics.enable(tank, Phaser.Physics.ARCADE);
-    tank.body.drag.set(0.2);
     tank.body.collideWorldBounds = true;
-    
 
+    //  The base of our Blue Tank
+    tank2 = game.add.sprite(90, 300, 'tank2');
+    tank2.scale.setTo(0.25,0.25);
+    tank2.anchor.setTo(0.5, 0.5);
+
+    //Adding physics and collision to Blue Tank
     game.physics.enable(tank2, Phaser.Physics.ARCADE);
-    tank2.body.drag.set(0.2);
     tank2.body.collideWorldBounds = true;
-    
-
-
-    weapon2 = game.add.weapon(1, 'bullet');
-    
-    weapon2.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
-
-    //  The speed at which the bullet is fired
-    weapon2.bulletSpeed = 200;
-    weapon2.trackSprite(tank2, 0, 0, true);
-
+    //Add Weapon for Red Tank
     weapon = game.add.weapon(1, 'bullet');
     weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
     //  The speed at which the bullet is fired
     weapon.bulletSpeed = 200;
-
+    //Weapon fire at angle of tank
     weapon.trackSprite(tank, 0, 0, true);
 
+    //Add Weapon for Blue Tank
+    weapon2 = game.add.weapon(1, 'bullet');
+    weapon2.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
 
+    //  The speed at which the blue bullet is fired
+    weapon2.bulletSpeed = 200;
+    //Weapon fire at angle of tank
+    weapon2.trackSprite(tank2, 0, 0, true);
+
+
+     //Getting the Keyboard keys mapped that need to be mapped
     cursors = game.input.keyboard.createCursorKeys();
     rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
     leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
     downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
     upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
-
+    spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    enterKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
 
 }
 
-
+//Things to constantle check for
 function update () {
+    //Collision detection check
     game.physics.arcade.collide(tank, layer);
     game.physics.arcade.collide(weapon.bullets, layer, bulletCollide);
     game.physics.arcade.collide(weapon2.bullets, layer, bulletCollide);
     game.physics.arcade.collide(tank2, layer);
-
+    //Time over Check / Win Check
     if (timeOver == false){ displayTimeRemaining();
     }else if (score1 > score2){
         winGameText.text = "Blue Tank Wins"
@@ -122,14 +120,15 @@ function update () {
             winGameText.text = "Tie Game!"
             endGame();
         }
-
+    //Scores
     scoreOneText.text = "Blue Tank: " + score1;
     scoreTwoText.text = "Red Tank: " + score2;
 
-
+    //Kill Function / Bullet Collision with tanks
     game.physics.arcade.overlap(tank, weapon2.bullets, enemyHit, null, this);
     game.physics.arcade.overlap(tank2, weapon.bullets, enemyHit2, null, this);
-
+    
+    //Movement 
     if (cursors.left.isDown)
     {
         tank.angle -= .75;
@@ -159,6 +158,7 @@ function update () {
 
         currentSpeed2 = 60;
     }
+    //Set some drag so it is alittle harder to stop
     if (currentSpeed2 > 0)
     {
         currentSpeed2 -= .5;
@@ -171,7 +171,7 @@ function update () {
             currentSpeed -= .5;
         }
     }
-
+    //Set actual velocity of tanks
     if (currentSpeed > 0)
     {
         game.physics.arcade.velocityFromRotation(tank.rotation, currentSpeed, tank.body.velocity);
@@ -183,7 +183,7 @@ function update () {
 
 
 
-
+    //Firing functions
     if (spaceKey.isDown)
     {
         //  Boom!
@@ -196,11 +196,10 @@ function update () {
     }
 }
 
-
+//What to do when tanks are hit | Tanks are killed and spawn randomly
 function enemyHit(tank, weapon2) {
     tank.kill();
     weapon2.kill();
-    console.log("Enemy hit");
     tank.reset(game.world.randomX,game.world.randomY);
     score1++
 }
@@ -208,11 +207,10 @@ function enemyHit(tank, weapon2) {
 function enemyHit2(tank2, weapon) {
     weapon.kill();
     tank2.kill();
-    console.log("Enemy hit");
     tank2.reset(game.world.randomX,game.world.randomY);
     score2++
 }
-
+//Time Remaining Function
 function displayTimeRemaining() {
     time = Math.floor(game.time.totalElapsedSeconds() );
     timeLeft = timeLimit - time;
@@ -222,7 +220,7 @@ function displayTimeRemaining() {
         timeLeft = 0;
         timeOver = true;
     }
-
+    //display minutes and seconds
     var min = Math.floor(timeLeft / 60);
     var sec = timeLeft % 60;
 
@@ -234,13 +232,15 @@ function displayTimeRemaining() {
     }
     timeText.text = 'Time Left ' + min + ':' + sec;
 }
-
+//Bullet collision with layer
 function bulletCollide (bullet, layer) {
     bullet.kill();
 }
-function reset(){
-    console.log("whats up is this thang working")
-}
+
+// function reset(){
+//     console.log("whats up is this thang working")
+// }
+//End game function
 function endGame(){
     tank.kill()
     tank2.kill()
