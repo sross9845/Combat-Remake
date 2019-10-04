@@ -19,8 +19,9 @@ var score1 = 0;
 var score2 = 0;
 var map;
 var layer;
-var time ;
-var timeLeft ;
+var time;
+var timeLeft;
+
 //Loading anything needed for preload of application
 function preload () {
     game.load.crossOrigin = 'anonymous';
@@ -240,6 +241,7 @@ function bulletCollide (bullet, layer) {
 // function reset(){
 //     console.log("whats up is this thang working")
 // }
+
 //End game function
 function endGame(){
     tank.kill()
