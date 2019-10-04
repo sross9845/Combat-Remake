@@ -5,7 +5,7 @@ var game = new Phaser.Game(1000, 600, Phaser.AUTO, 'my-game', { preload: preload
 //Global Variables
 var land;
 var timeText;
-var timeLimit = 120; // timeLimit for countdown in seconds
+const timeLimit = 120; // timeLimit for countdown in seconds
 var timeOver = false; // set to false at start
 var shadow;
 var tank;
@@ -238,13 +238,9 @@ function bulletCollide (bullet, layer) {
     bullet.kill();
 }
 
-// function reset(){
-//     console.log("whats up is this thang working")
-// }
 
 //End game function
 function endGame(){
     tank.kill()
     tank2.kill()
-    // setTimeout(reset, 5000);
 }
